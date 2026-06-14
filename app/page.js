@@ -1,3 +1,3 @@
 export default function HomePage() {
-  return <main>Imagen pendiente</main>;
+  return <main><img src="/rostizadora-coach.svg" alt="Mascota" /></main>;
 }
