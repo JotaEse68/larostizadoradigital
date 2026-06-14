@@ -25,10 +25,11 @@ export default function HomePage() {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/roast?repo=${encodeURIComponent(repo)}`);
+      const response = await fetch(`/api/analyze?repo=${encodeURIComponent(repo)}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || 'No se pudo completar el análisis.');
       setResult(data);
+      setTimeout(() => document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth' }), 120);
     } catch (err) {
       setError(err.message || 'Error inesperado.');
     } finally {
@@ -63,6 +64,7 @@ export default function HomePage() {
           <aside className="stage">
             <div className="bubble"><b>La Parrillera Cínica</b><span>Trae ese README. Si huele a humo, lo sabremos.</span></div>
             <div className="grill"><i/><i/><i/><b/></div>
+            <div className="sparks"><span/><span/><span/><span/></div>
           </aside>
         </div>
       </section>
@@ -73,9 +75,10 @@ export default function HomePage() {
         <article><span>💸</span><b>Coste vigilado</b><p>Nano, caché, rate limit y máximo de caracteres.</p></article>
       </section>
 
-      {loading && <section className="loading"><div className="loader"><i/><i/><i/><b/></div><div><p className="eyebrow">Parrilla encendida</p><h2>Estamos tostando ese README…</h2><p>No cierres la página. Primero lo quemamos con criterio, luego lo salvamos con tareas claras.</p></div></section>}
+      {loading && <section className="loading roastLoading"><div className="burningReadme"><div className="paper"><b>README.md</b><span>🔥 propuesta</span><span>🔥 demo</span><span>🔥 quickstart</span></div><div className="flames"><i/><i/><i/><i/></div></div><div><p className="eyebrow">Quemando el proyecto con criterio</p><h2>La parrilla está leyendo, tostando y separando humo de soluciones…</h2><p>No cierres la página. Ahora mismo estamos buscando promesa, demo, instalación, uso real y todas esas cosas que el README juraba tener.</p></div></section>}
 
       {a && <section className="results">
+        {result.setupWarning && <div className="warning">{result.setupWarning}</div>}
         <div className="top"><div><p className="eyebrow">Resultado de la parrilla</p><h2>{result.repo?.fullName}</h2><p>{a.verdict}</p></div><div className="score"><b>{a.score ?? '?'}</b><span>/100</span><small>{a.heatLevel}</small></div></div>
         <div className="burn"><strong>{a.openingBurn}</strong></div>
         <div className="cuts">
@@ -90,6 +93,7 @@ export default function HomePage() {
           <article className="card wide"><p className="eyebrow">Nuevo orden</p><h3>Estructura recomendada</h3><ul>{(a.fixedStructure || []).map((x, i) => <li key={i}>{x}</li>)}</ul></article>
           <article className="card wide"><p className="eyebrow">Empieza por aquí</p><h3>Primer bloque reescrito</h3><p>{a.rewriteStarter}</p></article>
         </div>
+        <div className="meta"><span>{result.repo?.readmePath}</span><span>{result.repo?.charactersAnalyzed?.toLocaleString('es-ES')} caracteres</span><span>{result.cached ? 'cache' : 'nuevo análisis'}</span></div>
         <blockquote>{a.finalSizzle}</blockquote>
       </section>}
 
