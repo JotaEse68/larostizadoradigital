@@ -1,5 +1,6 @@
 import './globals.css';
 import './rostizadora-extra.css';
+import './ux-fixes.css';
 
 export const metadata = {
   title: 'La Rostizadora Digital',
