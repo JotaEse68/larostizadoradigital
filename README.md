@@ -1,68 +1,42 @@
-# Jottarina README Roaster
+# La Rostizadora Digital
 
-App MVP para Vercel que analiza el README público de un repositorio GitHub y devuelve un roast útil en español con la personalidad de **Jottarina Coach**: sarcástica, mandona, cínica y divertida, pero con acciones concretas.
-
-Incluye la imagen de Jottarina como mascota visual en la interfaz.
-
-## Qué hace
-
-- Acepta URL pública de GitHub o formato `usuario/repositorio`.
-- Descarga únicamente el README público del repositorio.
-- No analiza el código.
-- Usa OpenAI desde backend server-side para no exponer la API key.
-- Modelo por defecto: `gpt-4.1-nano`.
-- Límite diario por IP: 3 análisis/día.
-- Máximo README analizado: 30.000 caracteres.
-- Sin login al principio.
-- Caché de resultados por repositorio/modelo/hash de README.
-- Diseño visual con Jottarina Coach.
+MVP en Next.js para Vercel. Analiza el README público de un repositorio GitHub y devuelve un roast en español: primero lo quema con cinismo, luego entrega soluciones concretas.
 
 ## Stack
 
 - Next.js App Router
-- Vercel Hobby compatible
-- API Route server-side: `/app/api/roast/route.js`
-- GitHub REST API
-- OpenAI Responses API
-- CSS propio, sin Tailwind
-- Rate limit con Upstash Redis opcional y fallback en memoria
+- Vercel Hobby
+- OpenAI server-side
+- Modelo por defecto: `gpt-4.1-nano`
+- Sin login
+- Rate limit: 3 análisis por IP/día
+- Máximo README: 30.000 caracteres
+- Caché por README durante 7 días
+- Upstash Redis opcional para rate limit/caché persistente
 
+## Variables de entorno
 
-## Estructura
-
-```txt
-jottarina-readme-roaster/
-├─ app/
-│  ├─ api/
-│  │  └─ roast/
-│  │     └─ route.js
-│  ├─ globals.css
-│  ├─ layout.js
-│  └─ page.js
-├─ public/
-│  └─ jottarina-coach.png
-├─ .env.example
-├─ .gitignore
-├─ next.config.mjs
-├─ package.json
-└─ README.md
+```env
+OPENAI_API_KEY=tu_clave_openai
+OPENAI_MODEL=gpt-4.1-nano
+GITHUB_TOKEN=opcional
+RATE_LIMIT_PER_DAY=3
+MAX_README_CHARS=30000
+CACHE_TTL_SECONDS=604800
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
 ```
 
-## Personalidad Jottarina
+`OPENAI_API_KEY` es obligatoria. `GITHUB_TOKEN` es recomendable. Upstash es opcional, pero en producción conviene usarlo para que el límite por IP no dependa de memoria serverless.
 
-El prompt está en:
+## Desarrollo
 
-```txt
-app/api/roast/route.js
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
-Busca:
+## Deploy
 
-```js
-const systemPrompt = `Eres Jottarina Coach...
-```
-
-Ahí puedes ajustar el nivel de sarcasmo, dureza y estilo.
-
-Importante: el prompt está diseñado para mantener el personaje sin ataques personales. La crítica va contra el README, no contra el autor.
-
+Subir a GitHub, importar en Vercel, añadir variables y desplegar.
